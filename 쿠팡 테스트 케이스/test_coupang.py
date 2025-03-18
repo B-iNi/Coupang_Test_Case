@@ -47,8 +47,8 @@ def test_open_and_search_login(driver):
     time.sleep(1)
     login_page(driver)
     time.sleep(2)
-    ID = "bini3925@nate.com"
-    PW = "Qudtlsdk0)"
+    ID = "000"
+    PW = "000"
     go_login(driver,ID,PW)
     time.sleep(3)
     keyword = "노트북"

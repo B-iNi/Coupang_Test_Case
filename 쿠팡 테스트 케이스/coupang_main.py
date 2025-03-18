@@ -41,7 +41,7 @@ def driver_init():
 
 
 ##### 한 글자씩 입력하게 하려고 함
-def type_like_human(element,text,delay=0.3):
+def type_like_human(element,text,delay=1.3):
     for char in text:
         element.send_keys(char)
         time.sleep(delay)
@@ -79,8 +79,23 @@ def go_login(driver,ID,PW):
 # 로그인 페이지(https://login.coupang.com/login/login.pang?rtnUrl=https%3A%2F%2Fwww.coupang.com%2Fnp%2Fpost%2Flogin%3Fr%3Dhttps%253A%252F%252Fwww.coupang.com%252F)
 
 
-#if __name__ == "__main__":
-# 
-#    driver.quit()  # 브라우저 닫기
+# 3-1.) 상세페이지 이동
+def get_item(driver):
+    driver.find_element(By.XPATH,'//*[@id="8336500238"]/a/dl/dt/img').click()
+    time.sleep(5)
+# 3-2.) 장바구니 넣기 클릭
+def putin_item(driver):
+    driver.find_element(By.XPATH,'//*[@id="contents"]/div[2]/div[1]/div[3]/div[8]/div[2]/div[2]/div/button[1]').click()
+    time.sleep(5)
+# 3-3.) 장바구니 아이콘 클릭
+def go_item_bag(driver):    
+    driver.find_element(By.XPATH,'//*[@id="header"]/section/div[1]/ul/li[2]/a/span[1]').click()
+
+    
+
+if __name__ == "__main__":
+    driver = driver_init() 
+    get_item(driver)
+    driver.quit()  # 브라우저 닫기
 
 
