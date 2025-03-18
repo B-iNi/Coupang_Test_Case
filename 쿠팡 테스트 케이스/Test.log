@@ -1,0 +1,8 @@
+2025-03-18 17:06:30,683 - INFO - ✅ 테스트 시작 - 로그 설정 완료
+2025-03-18 17:06:30,685 - INFO - ====== WebDriver manager ======
+2025-03-18 17:06:32,596 - INFO - Get LATEST chromedriver version for google-chrome
+2025-03-18 17:06:32,658 - INFO - Get LATEST chromedriver version for google-chrome
+2025-03-18 17:06:32,697 - INFO - Driver [C:\Users\user\.wdm\drivers\chromedriver\win64\133.0.6943.141\chromedriver-win32/chromedriver.exe] found in cache
+2025-03-18 17:06:34,410 - INFO - [Test4.임의 상품 검색 페이지에서 장바구니에 넣고 수량 조절!!
+2025-03-18 17:06:40,339 - INFO - 현재 상품 페이지 :https://www.coupang.com/np/search?component=&q=%EC%95%A0%ED%94%8C%EC%9B%8C%EC%B9%98&channel=user
+2025-03-18 17:06:47,522 - INFO - 상세 페이지로 이동 https://www.coupang.com/np/search?component=&q=%EC%95%A0%ED%94%8C%EC%9B%8C%EC%B9%98&channel=user
