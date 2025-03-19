@@ -63,8 +63,8 @@ def test_open_and_search_login(driver):
     time.sleep(1)
     login_page(driver)
     time.sleep(2)
-    ID = "bini3925@nate.com"
-    PW = "Qudtlsdk0)"
+    ID = "00000"
+    PW = "00000"
     go_login(driver,ID,PW)
     logger.info("[로그인 성공]")
     time.sleep(3)
