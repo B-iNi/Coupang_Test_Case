@@ -61,4 +61,11 @@ def test_case004_2(setup):
     together_eat.human_check_box()
     SELECT_HUMAN = WebDriverWait(driver,10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,'#root > div.flex.flex-col.mx-auto.min-h-screen.max-w-\\[600px\\] > main > section > div > div:nth-child(2) > div.flex.gap-4.overflow-x-auto.scrollbar-hide.whitespace-nowrap > div')))
     assert len(SELECT_HUMAN) > 0,"❌인원 선택 오류"
-    logging.info("✅ 인원 선택 완료")
+    logging.info("✅ 인원 선택 완료")  
+
+    # 임의 인원 빼기
+    together_eat.un_select_people()
+    TO_SELECT_HUMAN = len(SELECT_HUMAN)
+    SELECT_HUMAN = WebDriverWait(driver,10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,'#root > div.flex.flex-col.mx-auto.min-h-screen.max-w-\\[600px\\] > main > section > div > div:nth-child(2) > div.flex.gap-4.overflow-x-auto.scrollbar-hide.whitespace-nowrap > div')))
+    assert len(SELECT_HUMAN) != TO_SELECT_HUMAN,"❌인원 선택 오류"
+    logging.info(f"✅ 최종 선택 인원 {len(SELECT_HUMAN)} 명")
