@@ -20,20 +20,16 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture
-def setup():
-    driver = webdriver.Chrome()
-    driver.get("https://kdt-pt-1-pj-2-team03.elicecoding.com")
-    yield driver
-    driver.quit()
-
+@pytest.mark.usefixtures("driver")
 class TestCaseD:
-    def test_TC_D_001(self,setup):
-        driver = setup
+    def test_TC_D_001(self, driver:WebDriver):
         together_eat = TogetherEat(driver)
         login_page = LoginPage(driver)
         logging.info("\n[Test_D_001. Start!]")
-        login_page.input_password_and_email()
+        email="team2@example.co.kr"
+        password="Team2@@@"
+        login_page.do_login(email,password)
+
 
         # 메인에서 같이먹기 버튼 검증
         TOGETHER_BUTTON = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="root"]/div[1]/main/section/div/div[1]/button[2]')))
