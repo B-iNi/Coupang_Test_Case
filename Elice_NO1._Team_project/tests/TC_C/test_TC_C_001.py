@@ -19,21 +19,16 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture
-def setup():
-    driver = webdriver.Chrome()
-    driver.get("https://kdt-pt-1-pj-2-team03.elicecoding.com")
-    yield driver
-    driver.quit()
-
+@pytest.mark.usefixtures("driver")
 class TestCaseC:
-    def test_TC_C_001(self,setup):
-        driver = setup
+    def test_TC_C_001(self, driver:WebDriver):
         solo_eat = SoloEat(driver)
         login_page = LoginPage(driver)
         logging.info("\n[Test_C_001. Start!]")
+        email="team2@example.co.kr"
+        password="Team2@@@"
+        login_page.do_login(email,password)
 
-        login_page.input_password_and_email()
 
 
         # 메인에서 혼자먹기 버튼 검증
