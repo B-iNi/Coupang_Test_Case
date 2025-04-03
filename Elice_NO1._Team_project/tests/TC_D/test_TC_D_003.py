@@ -20,20 +20,16 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture
-def setup():
-    driver = webdriver.Chrome()
-    driver.get("https://kdt-pt-1-pj-2-team03.elicecoding.com")
-    yield driver
-    driver.quit()
-
+@pytest.mark.usefixtures("driver")
 class TestCaseD:
-    def test_TC_D_003(self,setup):
-        driver = setup
+    def test_TC_D_003(self, driver:WebDriver):
         together_eat = TogetherEat(driver)
         login_page = LoginPage(driver)
         logging.info("\n[Test_D_003. Start!]")
-        login_page.input_password_and_email()
+        email="team2@example.co.kr"
+        password="Team2@@@"
+        login_page.do_login(email,password)
+
     
          # 같이먹기 페이지 이동
         together_eat.go_together_eat()
