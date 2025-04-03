@@ -23,21 +23,16 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture
-def setup():
-    driver = webdriver.Chrome()
-    driver.get("https://kdt-pt-1-pj-2-team03.elicecoding.com")
-    yield driver
-    driver.quit()
-
-
+@pytest.mark.usefixtures("driver")
 class TestCaseF:
-    def test_TC_F_001(self,setup):
-        driver = setup
+    def test_TC_F_001(self, driver:WebDriver):
         team_pid = TeamPid(driver)
         login_page = LoginPage(driver)
         logging.info("\n[Test_F_001. Start!]")
-        login_page.input_password_and_email()
+        email="team2@example.co.kr"
+        password="Team2@@@"
+        login_page.do_login(email,password)
+
         
         # 메인에서 팀피드 버튼 검증
         TEAM_PID_BUTTON = WebDriverWait(driver,15).until(EC.presence_of_element_located((By.XPATH,'//*[@id="root"]/div[1]/div/ul/li[2]/a')))
