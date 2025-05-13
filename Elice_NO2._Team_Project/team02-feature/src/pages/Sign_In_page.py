@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 
-class SignInPage:
+class Sign_In_Page:
     URL = "http://localhost:4100/login"
 
     def __init__(self,driver: WebDriver):
@@ -30,9 +30,9 @@ class SignInPage:
     def sign_in(self,email,password):
         wait = WebDriverWait(self.driver,10)
         if email is not None:
-            wait.until(EC.visibility_of_element_located(self.Email_input)).send_keys(emil)
+            wait.until(EC.visibility_of_element_located(self.Email_input)).send_keys(email)
         if password is not None:
             wait.until(EC.visibility_of_element_located(self.Password_input)).send_keys(password)
-        wait.until(EC.element_to_be_clickable(self.Sign_up_button)).click()
+        wait.until(EC.element_to_be_clickable(self.Sign_in_button)).click()
 
         
