@@ -12,7 +12,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
-
 load_dotenv("src/config/.env")
 EMAIL = os.getenv("EMAIL")
 PASSWORD = os.getenv("PASSWORD")

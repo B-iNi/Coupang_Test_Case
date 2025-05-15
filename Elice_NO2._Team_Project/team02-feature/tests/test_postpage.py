@@ -1,10 +1,7 @@
 import pytest
 import os
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from src.utils.helpers import Utils
-from selenium import webdriver
 from src.pages.postpage import PostPage, generate_unique_text
+from src.utils.helpers import Utils # Utils 클래스를 import 합니다.
 import urllib.parse
 import time
 from dotenv import load_dotenv
@@ -16,8 +13,7 @@ EMAIL = os.getenv("EMAIL")
 PASSWORD = os.getenv("PASSWORD")
 
 #1. 게시글 성공적 작성
-def test_new_post_successful_creation():
-    driver = webdriver.Chrome()
+def test_new_post_successful_creation(driver):
     my_util = Utils(driver)
     my_util.utils_login(EMAIL, PASSWORD) #로그인
     postpage = PostPage(driver)
@@ -43,12 +39,10 @@ def test_new_post_successful_creation():
 
     #작성 완료 확인
     assert "/article" in postpage.driver.current_url
-    driver.quit()
 
 #2. 게시글 공란으로 게시 시도
-def test_publish_with_all_fields_blank():
-    driver = webdriver.Chrome()
-    my_util = Utils(driver)
+def test_publish_with_all_fields_blank(driver):
+    my_util = Utils(driver) # driver fixture 사용
     my_util.utils_login(EMAIL, PASSWORD)
     postpage = PostPage(driver)
     time.sleep(2)
@@ -62,7 +56,7 @@ def test_publish_with_all_fields_blank():
     #제목 제외하고 나머지 필드 채우기
     postpage.enter_post_topic(generate_unique_text("주제만_있음"))
     postpage.enter_post_body(generate_unique_text("내용만_있음"))
-    postpage.attempt_publish_and_verify_failure_on_editor()
+    postpage.attempt_publish_and_verify_failure_on_editor() #작성 페이지에 그대로 남아있음
     print("제목 공란 시 게시 실패 확인 완료")
 
     #주제만 공란으로 게시 시도
@@ -70,7 +64,7 @@ def test_publish_with_all_fields_blank():
     #주제 제외하고 나머지 필드 채우기
     postpage.enter_post_title(generate_unique_text("제목만_있음"))
     postpage.enter_post_body(generate_unique_text("내용만_있음"))
-    postpage.attempt_publish_and_verify_failure_on_editor()
+    postpage.attempt_publish_and_verify_failure_on_editor() #작성 페이지에 그대로 남아있음
     print("주제 공란 시 게시 실패 확인 완료")
 
     #본문만 공란으로 게시 시도
@@ -78,13 +72,11 @@ def test_publish_with_all_fields_blank():
     #본문 제외하고 나머지 필드 채우기
     postpage.enter_post_title(generate_unique_text("제목만_있음"))
     postpage.enter_post_topic(generate_unique_text("주제만_있음"))
-    postpage.attempt_publish_and_verify_failure_on_editor()
-    print("본문 공란 시 게시 실패 확인 완료")
-    driver.quit()
+    postpage.attempt_publish_and_verify_failure_on_editor() #작성 페이지에 그대로 남아있음
+    print("본문 공란 시 게시 실패 확인 완료") # driver.quit() # fixture 사용으로 변경
 
 #2. 내 프로필(작성 글 확인)
-def test_profile():
-    driver = webdriver.Chrome()
+def test_profile(driver): # driver fixture 사용
     my_util = Utils(driver)
     my_util.utils_login(EMAIL, PASSWORD) 
     postpage = PostPage(driver)
@@ -134,12 +126,10 @@ def test_profile():
     expected_profile_path = f"/@{urllib.parse.quote(logged_in_username)}"
     assert expected_profile_path in driver.current_url, f"작성자 프로필 페이지로 이동하지 못했습니다. 예상 경로: {expected_profile_path}, 현재 URL: {driver.current_url}"
 
-    driver.quit()
-
+    # driver.quit() # conftest.py의 fixture에서 처리하므로 제거합니다.
 #3. 게시글 수정
-def test_edit_post():
-    driver = webdriver.Chrome()
-    my_util = Utils(driver)
+def test_edit_post(driver): # driver fixture 사용
+    my_util = Utils(driver) # driver fixture 사용
     my_util.utils_login(EMAIL, PASSWORD)
     postpage = PostPage(driver)
     time.sleep(2)
@@ -186,12 +176,10 @@ def test_edit_post():
     assert actual_title_on_page == edited_title, f"수정된 제목이 일치하지 않습니다. 예상: '{edited_title}', 실제: '{actual_title_on_page}'"
     assert edited_body in actual_body_on_page, f"수정된 본문 내용이 포함되어 있지 않습니다. 예상 포함: '{edited_body}', 실제: '{actual_body_on_page}'"
 
-    driver.quit()
-
+    # driver.quit() # conftest.py의 fixture에서 처리하므로 제거합니다.
 #4. 게시글 삭제
-def test_delete_post():
-    driver = webdriver.Chrome()
-    my_util = Utils(driver)
+def test_delete_post(driver): # driver fixture 사용
+    my_util = Utils(driver) # driver fixture 사용
     my_util.utils_login(EMAIL, PASSWORD)
     postpage = PostPage(driver)
     time.sleep(2)
@@ -219,12 +207,10 @@ def test_delete_post():
     #My Articles 목록에서 방금 작성한 게시글이 더 이상 없는지 확인
     assert not postpage.is_article_visible_in_profile(unique_title), f"'{unique_title}' 게시글이 삭제되지 않음"
 
-    driver.quit()
-
+    # driver.quit() # conftest.py의 fixture에서 처리하므로 제거합니다.
 #5. 타인의 게시글 수정/삭제 제한
-def test_no_del_other_user_post():
-    driver = webdriver.Chrome()
-    my_util = Utils(driver)
+def test_no_del_other_user_post(driver): # driver fixture 사용
+    my_util = Utils(driver) # driver fixture 사용
     my_util.utils_login(EMAIL, PASSWORD)
     postpage = PostPage(driver)
     time.sleep(2)
@@ -252,4 +238,4 @@ def test_no_del_other_user_post():
     #삭제(Delete Article) 버튼이 없는지 확인
     assert not postpage.is_delete_article_button_visible(), "타인의 게시글에 'Delete Article' 버튼이 표시됩니다."
 
-    driver.quit()
+    # driver.quit() # conftest.py의 fixture에서 처리하므로 제거합니다.

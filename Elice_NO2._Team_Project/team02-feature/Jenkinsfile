@@ -1,0 +1,77 @@
+pipeline {
+  agent any
+
+  environment {
+    DATABASE_URL = 'postgresql://seondong:tjsehd85@192.168.0.3:5432/realworld?schema=public'
+    JWT_SECRET = 'your-jwt-secret'
+    NODE_ENV = 'development'
+  }
+
+  stages {
+    stage('Clone Backend') {
+      steps {
+        git url: 'https://github.com/gothinkster/node-express-realworld-example-app.git', branch: 'master'
+      }
+    }
+
+    stage('Install Backend Dependencies') {
+      steps {
+        sh 'npm install'
+      }
+    }
+
+    stage('Prisma Setup') {
+      steps {
+        sh 'npx prisma generate'
+        sh 'npx prisma migrate deploy'
+        sh 'npx prisma db seed || true'
+      }
+    }
+
+    stage('Start Backend') {
+      steps {
+        sh 'nohup npx nx serve api &'
+      }
+    }
+
+    stage('Clone Frontend') {
+      steps {
+        dir('frontend') {
+          git url: 'https://github.com/gothinkster/react-redux-realworld-example-app.git', branch: 'master'
+        }
+      }
+    }
+
+    stage('Install Frontend Dependencies') {
+      steps {
+        dir('frontend') {
+          sh 'npm install'
+        }
+      }
+    }
+
+    stage('Modify Frontend API URL') {
+      steps {
+        dir('frontend') {
+          sh "sed -i 's|https://conduit.productionready.io/api|http://localhost:3000/api|g' src/agent.js"
+        }
+      }
+    }
+
+    stage('Start Frontend') {
+      steps {
+        dir('frontend') {
+          sh 'nohup npm start &'
+        }
+      }
+    }
+
+    stage('Run QA Tests') {
+        steps {
+            dir('team02') { 
+                sh 'pytest'
+            }
+        }
+    }
+  }
+}

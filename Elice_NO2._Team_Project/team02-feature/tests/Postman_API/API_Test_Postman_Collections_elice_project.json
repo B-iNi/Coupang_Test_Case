@@ -1,0 +1,4086 @@
+{
+	"info": {
+		"_postman_id": "2d70ae00-d8d7-45b2-84a4-437c531c7c08",
+		"name": "Elice_2th_Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44075509"
+	},
+	"item": [
+		{
+			"name": "회원가입(Sign Up) Test",
+			"item": [
+				{
+					"name": "유효하지 않는 Email 형식 입력",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"회원가입 실패 [상태코드 422 Unprocessable Entity]\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 422]);\r",
+									"});\r",
+									"\r",
+									"//pm.test(\"email 유효성 오류 메시지가 포함 확인\", function () {\r",
+									"//    const jsonData = pm.response.json();\r",
+									"//    pm.expect(jsonData).to.have.property(\"errors\");\r",
+									"//    pm.expect(jsonData.errors).to.have.property(\"email\");\r",
+									"    \r",
+									"\r",
+									"//});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"wrong_password\", Math.random().toString(36).slice(-8));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": {\r\n    \"username\": \"{{random_username}}\",\r\n    \"email\": \"{{wrong_password}}\",\r\n    \"password\": \"123123\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Username 미 입력",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"회원가입 실패 [상태코드 422 Unprocessable Entity]\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 422]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"username 관련 오류 메시지가 포함 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"errors\");\r",
+									"    pm.expect(jsonData.errors).to.have.property(\"username\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// 랜덤 username 생성\r",
+									"const randomUsername = \"user\" + Math.floor(Math.random() * 1000000);\r",
+									"\r",
+									"// 랜덤 email 생성\r",
+									"const randomEmail = \"user\" + Math.floor(Math.random() * 1000000) + \"@example.com\";\r",
+									"\r",
+									"// 환경 변수에 저장\r",
+									"pm.environment.set(\"random_username\", randomUsername);\r",
+									"pm.environment.set(\"random_email\", randomEmail);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": {\r\n    \"username\": \"\",\r\n    \"email\": \"{{random_email}}\",\r\n    \"password\": \"{{password}}\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Email 미 입력",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"회원가입 실패 [상태코드 422 Unprocessable Entity]\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 422]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"email 관련 오류 메시지가 포함 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"errors\");\r",
+									"    pm.expect(jsonData.errors).to.have.property(\"email\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// 랜덤 username 생성\r",
+									"const randomUsername = \"user\" + Math.floor(Math.random() * 1000000);\r",
+									"\r",
+									"// 랜덤 email 생성\r",
+									"const randomEmail = \"user\" + Math.floor(Math.random() * 1000000) + \"@example.com\";\r",
+									"\r",
+									"// 환경 변수에 저장\r",
+									"pm.environment.set(\"random_username\", randomUsername);\r",
+									"pm.environment.set(\"random_email\", randomEmail);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": {\r\n    \"username\": \"{{random_username}}\",\r\n    \"email\": \" \",\r\n    \"password\": \"{{password}}\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Password 미 입력",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"회원가입 실패 [상태코드 422 Unprocessable Entity]\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 422]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"password 관련 오류 메시지가 포함 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"errors\");\r",
+									"    pm.expect(jsonData.errors).to.have.property(\"password\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// 랜덤 username 생성\r",
+									"const randomUsername = \"user\" + Math.floor(Math.random() * 1000000);\r",
+									"\r",
+									"// 랜덤 email 생성\r",
+									"const randomEmail = \"user\" + Math.floor(Math.random() * 1000000) + \"@example.com\";\r",
+									"\r",
+									"// 환경 변수에 저장\r",
+									"pm.environment.set(\"random_username\", randomUsername);\r",
+									"pm.environment.set(\"random_email\", randomEmail);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": {\r\n    \"username\": \"{{random_username}}\",\r\n    \"email\": \"{{random_email}}\",\r\n    \"password\": \"\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "입력값 미 입력",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"회원가입 실패 [상태코드 422 Unprocessable Entity]\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 422]);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": {\r\n    \"username\": \"\",\r\n    \"email\": \"\",\r\n    \"password\": \"\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "회원가입 성공",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"회원가입 성공 [상태코드 201 Created]\", function () {\r",
+									"    pm.response.to.have.status(201);  \r",
+									"});\r",
+									"\r",
+									"pm.test(\"응답에 user 객체가 포함 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    const randomUsername = pm.environment.get(\"random_username\");\r",
+									"    const randomEmail = pm.environment.get(\"random_email\");\r",
+									"    pm.expect(jsonData).to.have.property(\"user\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"email\", randomEmail);\r",
+									"    pm.expect(jsonData.user).to.have.property(\"username\", randomUsername);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"JWT 토큰이 포함 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.user).to.have.property(\"token\");\r",
+									"    pm.environment.set(\"token\", jsonData.user.token); \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// 랜덤 username 생성\r",
+									"const randomUsername = \"user\" + Math.floor(Math.random() * 1000000);\r",
+									"\r",
+									"// 랜덤 email 생성\r",
+									"const randomEmail = \"user\" + Math.floor(Math.random() * 1000000) + \"@example.com\";\r",
+									"\r",
+									"// 환경 변수에 저장\r",
+									"pm.environment.set(\"random_username\", randomUsername);\r",
+									"pm.environment.set(\"random_email\", randomEmail);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": {\r\n    \"username\": \"{{random_username}}\",\r\n    \"email\": \"{{random_email}}\",\r\n    \"password\": \"123123\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "로그인(Sign In) Test",
+			"item": [
+				{
+					"name": "Email 미 입력",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"로그인 실패 [상태코드 422 Unprocessable Entity]\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"에러 메시지에 email 필드 관련 메시지가 포함 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"errors\");\r",
+									"    pm.expect(jsonData.errors).to.have.property(\"email\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"user\": {\"email\": \"\", \"password\": \"{{password}}\"}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Password 미 입력",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"로그인 실패 [상태코드 422 Unprocessable Entity]\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"에러 메시지에 password 필드 관련 메시지가 포함 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"errors\");\r",
+									"    pm.expect(jsonData.errors).to.have.property(\"password\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"user\": {\"email\": \"{{email}}\", \"password\": \"\"}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "유효하지 않는 Password 입력",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"로그인 실패 [상태코드 403 Forbidden]\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"응답에 오류 메시지가 포함 확인무\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"errors\");\r",
+									"    // 구체적인 메시지 체크 (옵션)\r",
+									"    pm.expect(jsonData.errors[\"email or password\"]).to.include(\"is invalid\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"wrong_password\", Math.random().toString(36).slice(-8));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"user\": {\"email\": \"{{email}}\", \"password\": \"{{wrong_password}}\"}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "입력값 미 입력",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"로그인 실패 [상태코드 422 Unprocessable Entity]\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 422]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"응답에 email  에러가 포함 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"errors\");\r",
+									"\r",
+									"    pm.expect(jsonData.errors).to.have.property(\"email\");\r",
+									"    //pm.expect(jsonData.errors).to.have.property(\"password\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Transfer-Encoding",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"user\": {\"email\": \"\", \"password\": \"\"}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "로그인 성공",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"로그인 요청이 성공 [상태코드 200 OK]\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"응답에 user 객체 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"user\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"email\", \"test@com\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"JWT 토큰이 존재 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.user).to.have.property(\"token\");\r",
+									"    pm.environment.set(\"token\", jsonData.user.token); // 토큰을 환경변수에 저장 (다음 요청에서 사용 가능)\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"user\": {\"email\": \"{{email}}\", \"password\": \"{{password}}\"}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "사용자 프로필(Profile) Test",
+			"item": [
+				{
+					"name": "로그인 성공",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"로그인 요청이 성공 [상태코드 200 OK]\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"응답에 user 객체 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"user\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"email\", \"test@com\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"JWT 토큰이 존재 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.user).to.have.property(\"token\");\r",
+									"    pm.environment.set(\"token\", jsonData.user.token); // 토큰 저장\r",
+									"    pm.environment.set(\"username\", jsonData.user.username); // ✅ 사용자 이름 저장\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"user\": {\"email\": \"{{email}}\", \"password\": \"{{password}}\"}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "프로필 페이지 접근",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"프로필 페이지 접근 [상태 코드 200 OK]\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"profile 객체가 포함 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"profile\");\r",
+									"    pm.expect(jsonData.profile).to.have.property(\"username\", \"test1\");\r",
+									"    pm.expect(jsonData.profile).to.have.property(\"bio\");\r",
+									"    pm.expect(jsonData.profile).to.have.property(\"image\");\r",
+									"    pm.expect(jsonData.profile).to.have.property(\"following\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/profiles/{{username}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"profiles",
+								"{{username}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "프로필 정보 수정",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"프로필 수정 완료 [상태 코드 200 OK]\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"user 객체가 응답에 포함 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"user\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"email\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"username\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"bio\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"image\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"token\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"random_username\", \"수정\" + Math.floor(Math.random() * 1000000));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": {\r\n    \"email\": \"test@com\",\r\n    \"username\": \"test1\",\r\n    \"bio\": \"나는 Postman에서 수정했어요!{{random_username}}\",\r\n    \"image\": \"https://i.namu.wiki/i/Vj5qbEFSnNirgU_WzuKbQmLd20hbM6QyNGHb8f87wB4iUuMA-OliDHoQMBnxu7jSowmBl5R-wBKXIb5Voe1bxw.webp\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "사용자 프로필 조회",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"사용자 프로필 조회 [상태 코드 200 OK]\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"user 객체가 포함\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"user\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"email\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"username\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"token\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "게시글 (Postpage) Test",
+			"item": [
+				{
+					"name": "로그인 성공",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"로그인 요청이 성공 [상태코드 200 OK]\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"응답에 user 객체 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"user\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"email\", \"test@com\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"JWT 토큰이 존재 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.user).to.have.property(\"token\");\r",
+									"    pm.environment.set(\"token\", jsonData.user.token); // 토큰을 환경변수에 저장 (다음 요청에서 사용 가능)\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"user\": {\"email\": \"{{email}}\", \"password\": \"{{password}}\"}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "게시글 필수값 미 입력",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"randomTitle\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomDescription\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomBody\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"random_tag\", `\"태그${Math.floor(Math.random() * 1000)}\"`);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"필수 필드 누락으로 게시 실패 [상태코드 422 Unprocessable Entity]\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    pm.expect(res.errors).to.have.property(\"title\");\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"article\": {\r\n    \"title\": \"\",\r\n    \"description\": \"\",\r\n    \"body\": \"\",\r\n    \"tagList\": []\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Title 미 입력",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"randomTitle\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomDescription\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomBody\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"random_tag\", `\"태그${Math.floor(Math.random() * 1000)}\"`);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Title 필드 누락으로 게시 실패 [상태코드 422 Unprocessable Entity]\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    pm.expect(res.errors).to.have.property(\"title\");\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"article\": {\r\n    \"title\": \"\",\r\n    \"description\": \"{{random_description}}\",\r\n    \"body\": \"{{random_body}}\",\r\n    \"tagList\": [{{random_tag}}]\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Description 미 입력",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"randomTitle\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomDescription\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomBody\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"random_tag\", `\"태그${Math.floor(Math.random() * 1000)}\"`);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Description 필드 누락으로 게시 실패 [상태코드 422 Unprocessable Entity]\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    pm.expect(res.errors).to.have.property(\"description\");\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"article\": {\r\n    \"title\": \"{{random_title\",\r\n    \"description\": \"\",\r\n    \"body\": \"{{random_body}}\",\r\n    \"tagList\": [{{random_tag}}]\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Body 미 입력",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"randomTitle\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomDescription\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomBody\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"random_tag\", `\"태그${Math.floor(Math.random() * 1000)}\"`);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Body 필드 누락으로 게시 실패 [상태코드 422 Unprocessable Entity]\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    pm.expect(res.errors).to.have.property(\"body\");\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"article\": {\r\n    \"title\": \"{{random_title\",\r\n    \"description\": \"{{random_description\",\r\n    \"body\": \"\",\r\n    \"tagList\": [{{random_tag}}]\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "게시글 작성",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"randomTitle\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomDescription\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomBody\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"random_tag\", `\"태그${Math.floor(Math.random() * 1000)}\"`);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"게시글 작성 성공 [상태코드 201 Created]\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    pm.expect(res.article).to.have.property(\"slug\");\r",
+									"\r",
+									"    // 환경변수 저장\r",
+									"    pm.environment.set(\"latest_slug\", res.article.slug);\r",
+									"    pm.environment.set(\"latest_title\", res.article.title);\r",
+									"    pm.environment.set(\"latest_tags\", JSON.stringify(res.article.tagList || []));\r",
+									"\r",
+									"    console.log(\"✅ 저장된 slug:\", res.article.slug);\r",
+									"    console.log(\"✅ 저장된 title:\", res.article.title);\r",
+									"    console.log(\"✅ 저장된 태그:\", res.article.tagList);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"article\": {\r\n    \"title\": \"작성테스트_제목_{{randomTitle}}\",\r\n    \"description\": \"작성테스트_주제_{{randomDescription}}\",\r\n    \"body\": \"작성테스트_내용_{{randomBody}}\",\r\n    \"tagList\": [{{random_tag}}]\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "게시글 목록 확인",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"randomTitle\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomDescription\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomBody\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"random_tag\", `\"태그${Math.floor(Math.random() * 1000)}\"`);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"게시글 목록 확인 [상태코드 200 OK]\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"\r",
+									"    const articles = pm.response.json().articles;\r",
+									"    const targetTitle = pm.environment.get(\"latest_title\");\r",
+									"\r",
+									"    const titles = articles.map(a => a.title);\r",
+									"    console.log(\"🔍 찾고 있는 제목:\", targetTitle);\r",
+									"    console.log(\"📄 게시글 목록 제목들:\", titles);\r",
+									"\r",
+									"    const found = titles.includes(targetTitle);\r",
+									"    pm.expect(found).to.be.true;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles?author={{username}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles"
+							],
+							"query": [
+								{
+									"key": "author",
+									"value": "{{username}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "게시글 상세 조회",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"randomTitle\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomDescription\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomBody\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"random_tag\", `\"태그${Math.floor(Math.random() * 1000)}\"`);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"게시글 상세 조회 성공 [상태 코드 200 OK]\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"\r",
+									"    const res = pm.response.json();\r",
+									"    const expectedTitle = pm.environment.get(\"latest_title\");\r",
+									"    const expectedSlug = pm.environment.get(\"latest_slug\");\r",
+									"\r",
+									"    pm.expect(res.article).to.have.property(\"slug\", expectedSlug);\r",
+									"    pm.expect(res.article).to.have.property(\"title\", expectedTitle);\r",
+									"\r",
+									"    console.log(\"✅ 상세조회 확인 완료:\", res.article.title);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles/{{latest_slug}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles",
+								"{{latest_slug}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "게시글 수정",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"editedTitle\", \"제목_\" + Math.floor(Math.random() * 10000));\r",
+									"pm.variables.set(\"editedDesc\", \"설명_\" + Math.floor(Math.random() * 10000));\r",
+									"pm.variables.set(\"editedBody\", \"본문_\" + Math.floor(Math.random() * 10000));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"게시글 수정 성공 [상태코드 200 OK]\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    // ✅ 여기서 수정된 값 저장\r",
+									"    pm.environment.set(\"editedTitle\", res.article.title);\r",
+									"    pm.environment.set(\"editedBody\", res.article.body);\r",
+									"    pm.environment.set(\"latest_slug\", res.article.slug); // 슬러그도 최신화\r",
+									"\r",
+									"    console.log(\"✅ 수정된 제목:\", res.article.title);\r",
+									"    console.log(\"✅ 수정된 본문:\", res.article.body);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"article\": {\r\n    \"title\": \"수정된 제목 {{editedTitle}}\",\r\n    \"description\": \"수정된 설명 {{editedDesc}}\",\r\n    \"body\": \"수정된 본문입니다. {{editedBody}}\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles/{{latest_slug}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles",
+								"{{latest_slug}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "수정된 게시글 상세보기",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"editedTitle\", \"제목_\" + Math.floor(Math.random() * 10000));\r",
+									"pm.variables.set(\"editedDesc\", \"설명_\" + Math.floor(Math.random() * 10000));\r",
+									"pm.variables.set(\"editedBody\", \"본문_\" + Math.floor(Math.random() * 10000));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"수정된 게시글 상세 내용 확인 [상태 코드 200 OK]\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"\r",
+									"    const res = pm.response.json();\r",
+									"    const rawTitle = pm.environment.get(\"editedTitle\");\r",
+									"    const rawBody = pm.environment.get(\"editedBody\");\r",
+									"\r",
+									"    console.log(\"📌 rawTitle (환경변수):\", rawTitle);\r",
+									"    console.log(\"📌 rawBody (환경변수):\", rawBody);\r",
+									"    console.log(\"📌 응답 title:\", res.article.title);\r",
+									"    console.log(\"📌 응답 body:\", res.article.body);\r",
+									"\r",
+									"    pm.expect(typeof rawTitle).to.eql(\"string\");\r",
+									"    pm.expect(typeof rawBody).to.eql(\"string\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles/{{latest_slug}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles",
+								"{{latest_slug}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "게시글 삭제",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"randomTitle\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomDescription\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"randomBody\", Math.floor(Math.random() * 100000));\r",
+									"pm.variables.set(\"random_tag\", `\"태그${Math.floor(Math.random() * 1000)}\"`);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"게시글 삭제 성공 [상태코드 204 No Content]\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"    console.log(\"🗑️ 삭제된 slug:\", pm.environment.get(\"latest_slug\"));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles/{{latest_slug}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles",
+								"{{latest_slug}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "태그(Tag) Test",
+			"item": [
+				{
+					"name": "태그 선택 게시글 조회",
+					"item": [
+						{
+							"name": "로그인 성공",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"로그인 요청이 성공 [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"응답에 user 객체 확인\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"user\");\r",
+											"    pm.expect(jsonData.user).to.have.property(\"email\", \"test@com\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"JWT 토큰이 존재 확인\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.user).to.have.property(\"token\");\r",
+											"    pm.environment.set(\"token\", jsonData.user.token); // 토큰을 환경변수에 저장 (다음 요청에서 사용 가능)\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"user\": {\"email\": \"{{email}}\", \"password\": \"{{password}}\"}}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "전체 태그 가져오기",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"전체 태그 조회 성공 [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"\r",
+											"    const jsonData = pm.response.json();\r",
+											"    const tags = jsonData.tags;\r",
+											"\r",
+											"    pm.expect(tags).to.be.an(\"array\");\r",
+											"    pm.expect(tags.length).to.be.above(0);\r",
+											"\r",
+											"    // 랜덤 태그 선택 및 환경변수 저장\r",
+											"    const randomIndex = Math.floor(Math.random() * tags.length);\r",
+											"    const selectedTag = tags[randomIndex];\r",
+											"\r",
+											"    pm.environment.set(\"selected_tag\", selectedTag);\r",
+											"\r",
+											"    console.log(\"✅ 전체 태그 목록:\", tags);\r",
+											"    console.log(\"🎯 저장된 selected_tag:\", selectedTag);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// 랜덤 제목, 설명, 본문 내용, 태그 생성\r",
+											"const randomTitle = \"제목 예시\" + Math.floor(Math.random() * 1000000);\r",
+											"const randomDescription = \"주제 예시\" + Math.floor(Math.random() * 1000000);\r",
+											"const randomBody = \"본문 내용 예시\" + Math.floor(Math.random() * 1000000);\r",
+											"const randomTag = \"tag\" + Math.floor(Math.random() * 1000000);\r",
+											"\r",
+											"// 환경 변수에 저장\r",
+											"pm.environment.set(\"random_title\", randomTitle);\r",
+											"pm.environment.set(\"random_description\", randomDescription);\r",
+											"pm.environment.set(\"random_body\", randomBody);\r",
+											"pm.environment.set(\"random_tag\", randomTag);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/tags",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"tags"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "선택한 태그로 게시글 조회",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"선택한 태그로 게시글 필터링 성공 [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"✅ 'articles' 필드는 배열이어야 함\", function () {\r",
+											"    pm.expect(jsonData).to.have.property(\"articles\");\r",
+											"    pm.expect(jsonData.articles).to.be.an(\"array\");\r",
+											"});\r",
+											"\r",
+											"// ✅ 2. 최소 1개의 게시글이 존재해야 함 (랜덤 태그니까 없을 수도 있음 → 조건부 처리)\r",
+											"if (jsonData.articles.length > 0) {\r",
+											"    pm.test(\"✅ 해당 태그가 달린 게시글이 존재함\", function () {\r",
+											"        const tagToCheck = pm.environment.get(\"selected_tag\");\r",
+											"        jsonData.articles.forEach(article => {\r",
+											"            pm.expect(article.tagList).to.include(tagToCheck);\r",
+											"        });\r",
+											"    });\r",
+											"\r",
+											"    console.log(\"🎯 필터된 게시글 수:\", jsonData.articles.length);\r",
+											"} else {\r",
+											"    console.warn(\"⚠️ 해당 태그로 작성된 게시글이 없습니다.\");\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// 랜덤 제목, 설명, 본문 내용, 태그 생성\r",
+											"const randomTitle = \"제목 예시\" + Math.floor(Math.random() * 1000000);\r",
+											"const randomDescription = \"주제 예시\" + Math.floor(Math.random() * 1000000);\r",
+											"const randomBody = \"본문 내용 예시\" + Math.floor(Math.random() * 1000000);\r",
+											"const randomTag = \"tag\" + Math.floor(Math.random() * 1000000);\r",
+											"\r",
+											"// 환경 변수에 저장\r",
+											"pm.environment.set(\"random_title\", randomTitle);\r",
+											"pm.environment.set(\"random_description\", randomDescription);\r",
+											"pm.environment.set(\"random_body\", randomBody);\r",
+											"pm.environment.set(\"random_tag\", randomTag);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/articles?tag={{selected_tag}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"articles"
+									],
+									"query": [
+										{
+											"key": "tag",
+											"value": "{{selected_tag}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "태그 게시글 발행 찾기",
+					"item": [
+						{
+							"name": "로그인 성공",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"로그인 요청이 성공 [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"응답에 user 객체 확인\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"user\");\r",
+											"    pm.expect(jsonData.user).to.have.property(\"email\", \"test@com\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"JWT 토큰이 존재 확인\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.user).to.have.property(\"token\");\r",
+											"    pm.environment.set(\"token\", jsonData.user.token); // 토큰을 환경변수에 저장 (다음 요청에서 사용 가능)\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"user\": {\"email\": \"{{email}}\", \"password\": \"{{password}}\"}}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "게시글 작성",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.variables.set(\"randomTitle\", Math.floor(Math.random() * 100000));\r",
+											"pm.variables.set(\"randomDescription\", Math.floor(Math.random() * 100000));\r",
+											"pm.variables.set(\"randomBody\", Math.floor(Math.random() * 100000));\r",
+											"pm.variables.set(\"random_tag\", `\"태그${Math.floor(Math.random() * 1000)}\"`);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"게시글 작성 성공 [상태코드 201 Created]\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"\r",
+											"    const res = pm.response.json();\r",
+											"    const article = res.article;\r",
+											"\r",
+											"    \r",
+											"    pm.expect(article).to.have.property(\"slug\");\r",
+											"    pm.expect(article).to.have.property(\"title\");\r",
+											"    pm.expect(article).to.have.property(\"tagList\");\r",
+											"\r",
+											"    \r",
+											"    pm.environment.set(\"latest_slug\", article.slug);\r",
+											"    pm.environment.set(\"latest_title\", article.title);\r",
+											"    pm.environment.set(\"latest_tags\", JSON.stringify(article.tagList || []));\r",
+											"\r",
+											"    \r",
+											"    if (article.tagList.length > 0) {\r",
+											"        pm.environment.set(\"latest_tag\", article.tagList[0]);\r",
+											"    }\r",
+											"\r",
+											"    console.log(\"✅ slug:\", article.slug);\r",
+											"    console.log(\"✅ title:\", article.title);\r",
+											"    console.log(\"🏷️ tagList:\", article.tagList);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"article\": {\r\n    \"title\": \"작성테스트_제목_{{randomTitle}}\",\r\n    \"description\": \"작성테스트_주제_{{randomDescription}}\",\r\n    \"body\": \"작성테스트_내용_{{randomBody}}\",\r\n    \"tagList\": [{{random_tag}}]\r\n  }\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/articles",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"articles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "작성한 게시글 태그로 찾기",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.variables.set(\"randomTitle\", Math.floor(Math.random() * 100000));\r",
+											"pm.variables.set(\"randomDescription\", Math.floor(Math.random() * 100000));\r",
+											"pm.variables.set(\"randomBody\", Math.floor(Math.random() * 100000));\r",
+											"pm.variables.set(\"random_tag\", `\"태그${Math.floor(Math.random() * 1000)}\"`);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"태그 기반 게시글 조회 성공 [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const jsonData = pm.response.json();\r",
+											"const targetTag = pm.environment.get(\"latest_tag\");\r",
+											"\r",
+											"pm.test(\"'articles' 필드는 배열로 존재\", function () {\r",
+											"    pm.expect(jsonData).to.have.property(\"articles\");\r",
+											"    pm.expect(jsonData.articles).to.be.an(\"array\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"if (jsonData.articles.length > 0) {\r",
+											"    pm.test(\"게시글에 요청한 태그가 포함\", function () {\r",
+											"        jsonData.articles.forEach(article => {\r",
+											"            pm.expect(article.tagList).to.include(targetTag);\r",
+											"        });\r",
+											"    });\r",
+											"\r",
+											"    \r",
+											"    const latestTitle = pm.environment.get(\"latest_title\");\r",
+											"    const match = jsonData.articles.some(article => article.title === latestTitle);\r",
+											"\r",
+											"    pm.test(\"방금 작성한 게시글이 포함되어야 함\", function () {\r",
+											"        pm.expect(match).to.be.true;\r",
+											"    });\r",
+											"\r",
+											"    console.log(\"요청된 태그:\", targetTag);\r",
+											"    console.log(\"조회된 게시글 수:\", jsonData.articles.length);\r",
+											"} else {\r",
+											"    console.warn(\"해당 태그로 작성된 게시글이 아직 없습니다.\");\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/articles?tag={{latest_tag}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"articles"
+									],
+									"query": [
+										{
+											"key": "tag",
+											"value": "{{latest_tag}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "게시글 삭제",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.variables.set(\"randomTitle\", Math.floor(Math.random() * 100000));\r",
+											"pm.variables.set(\"randomDescription\", Math.floor(Math.random() * 100000));\r",
+											"pm.variables.set(\"randomBody\", Math.floor(Math.random() * 100000));\r",
+											"pm.variables.set(\"random_tag\", `\"태그${Math.floor(Math.random() * 1000)}\"`);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"게시글 삭제 성공 [상태코드 204 No Content]\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"    console.log(\"🗑️ 삭제된 slug:\", pm.environment.get(\"latest_slug\"));\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/articles/{{latest_slug}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"articles",
+										"{{latest_slug}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "소셜 (Social) Test",
+			"item": [
+				{
+					"name": "팔로우 요청",
+					"item": [
+						{
+							"name": "로그인 성공",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"로그인 요청이 성공 [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"응답에 user 객체 확인\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"user\");\r",
+											"    pm.expect(jsonData.user).to.have.property(\"email\", \"test@com\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"JWT 토큰이 존재 확인\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.user).to.have.property(\"token\");\r",
+											"    pm.environment.set(\"token\", jsonData.user.token); // 토큰을 환경변수에 저장 (다음 요청에서 사용 가능)\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"user\": {\"email\": \"{{email}}\", \"password\": \"{{password}}\"}}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "글로벌 피드 조회",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"글로벌 피드 조회 [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"let articles = pm.response.json().articles;\r",
+											"\r",
+											"if (articles.length === 0) {\r",
+											"    pm.environment.set(\"randomUsername\", \"\");\r",
+											"    pm.environment.set(\"followed_username\", \"\"); // fallback\r",
+											"    console.warn(\"No articles found.\");\r",
+											"} else {\r",
+											"    let usernames = articles.map(article => article.author.username);\r",
+											"    let uniqueUsernames = [...new Set(usernames)];\r",
+											"    let filtered = uniqueUsernames.filter(username => username !== \"test1\");\r",
+											"\r",
+											"    if (filtered.length === 0) {\r",
+											"        pm.environment.set(\"randomUsername\", \"\");\r",
+											"        pm.environment.set(\"followed_username\", \"\");\r",
+											"        console.warn(\"자기 자신 외 다른 사용자가 없습니다.\");\r",
+											"    } else {\r",
+											"        let selected = filtered[Math.floor(Math.random() * filtered.length)];\r",
+											"        pm.environment.set(\"randomUsername\", selected);\r",
+											"        pm.environment.set(\"followed_username\", selected); // ✅ 추가\r",
+											"        console.log(\"🔁 Selected username:\", selected);\r",
+											"    }\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/articles?limit=10&offset=0",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"articles"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10"
+										},
+										{
+											"key": "offset",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "팔로우 요청",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"팔로우 완료 [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"let profile = pm.response.json().profile;\r",
+											"if (profile.following) {\r",
+											"    console.log(\"✅ Successfully followed\", profile.username);\r",
+											"    pm.environment.set(\"followed_username\", profile.username);  // 여기서 저장\r",
+											"} else {\r",
+											"    console.error(\"❌ Failed to follow\", profile.username);\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/profiles/{{followed_username}}/follow",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"profiles",
+										"{{followed_username}}",
+										"follow"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Feed 확인",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Your Feed [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"let articles = pm.response.json().articles;\r",
+											"let followedUsername = pm.environment.get(\"followed_username\");\r",
+											"\r",
+											"pm.test(\"피드에 팔로우한 사용자의 글이 포함되어 있음\", function () {\r",
+											"    let found = articles.some(article => article.author.username === followedUsername);\r",
+											"    pm.expect(found).to.eql(true, `✅ '${followedUsername}'의 게시글이 피드에 있음`);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/articles/feed",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"articles",
+										"feed"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "언 팔로우 요청",
+					"item": [
+						{
+							"name": "로그인 성공",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"로그인 요청이 성공 [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"응답에 user 객체 확인\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"user\");\r",
+											"    pm.expect(jsonData.user).to.have.property(\"email\", \"test@com\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"JWT 토큰이 존재 확인\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.user).to.have.property(\"token\");\r",
+											"    pm.environment.set(\"token\", jsonData.user.token); // 토큰을 환경변수에 저장 (다음 요청에서 사용 가능)\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"user\": {\"email\": \"{{email}}\", \"password\": \"{{password}}\"}}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "언 팔로우 요청",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"언팔로우 완료 [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"let profile = pm.response.json().profile;\r",
+											"\r",
+											"pm.test(\"팔로우 상태가 false 이어야 함\", function () {\r",
+											"    pm.expect(profile.following).to.eql(false);\r",
+											"});\r",
+											"\r",
+											"if (!profile.following) {\r",
+											"    console.log(\"✅ Successfully unfollowed\", profile.username);\r",
+											"} else {\r",
+											"    console.error(\"❌ Still following\", profile.username);\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/profiles/{{followed_username}}/follow",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"profiles",
+										"{{followed_username}}",
+										"follow"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Feed 확인",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"피드 불러오기 성공 [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const articles = pm.response.json().articles || [];\r",
+											"const unfollowedUsername = pm.environment.get(\"followed_username\");\r",
+											"\r",
+											"let found = articles.some(article => article.author.username === unfollowedUsername);\r",
+											"\r",
+											"pm.test(`❌ 피드에 '${unfollowedUsername}'의 게시글이 없어야 함`, function () {\r",
+											"    pm.expect(found).to.eql(false);\r",
+											"});\r",
+											"\r",
+											"if (!found) {\r",
+											"    console.log(`✅ '${unfollowedUsername}'의 게시글이 피드에 없음 (언팔로우 정상 작동)`);\r",
+											"} else {\r",
+											"    console.error(`❌ '${unfollowedUsername}'의 게시글이 피드에 있음 (언팔로우 실패 가능성)`);\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/articles/feed",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"articles",
+										"feed"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "게시글 좋아요/취소",
+					"item": [
+						{
+							"name": "로그인 성공",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"로그인 요청이 성공 [상태코드 200 OK]\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"응답에 user 객체 확인\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"user\");\r",
+											"    pm.expect(jsonData.user).to.have.property(\"email\", \"test@com\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"JWT 토큰이 존재 확인\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.user).to.have.property(\"token\");\r",
+											"    pm.environment.set(\"token\", jsonData.user.token); // 토큰을 환경변수에 저장 (다음 요청에서 사용 가능)\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"user\": {\"email\": \"{{email}}\", \"password\": \"{{password}}\"}}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/users/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "글로벌 피드조회",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// 첫 번째 게시글의 slug와 title 저장\r",
+											"const articles = pm.response.json().articles;\r",
+											"pm.test(\"Global Feed에서 게시글 가져오기 [상태코드 200 OK]\", function () {\r",
+											"    pm.expect(articles.length).to.be.above(0);\r",
+											"});\r",
+											"\r",
+											"// slug와 title을 환경 변수로 저장\r",
+											"pm.environment.set(\"target_slug\", articles[0].slug);\r",
+											"pm.environment.set(\"target_title\", articles[0].title);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/articles?limit=10&offset=0",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"articles"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10"
+										},
+										{
+											"key": "offset",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "게시글 좋아요",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// 좋아요 성공 여부 확인\r",
+											"pm.test(\"최근 게시글 좋아요 성공 [상태코드 200 OK]\", function () {\r",
+											"    const article = pm.response.json().article;\r",
+											"    pm.expect(article.favorited).to.eql(true);\r",
+											"    pm.expect(article.favoritesCount).to.be.above(0);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/articles/{{target_slug}}/favorite",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"articles",
+										"{{target_slug}}",
+										"favorite"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "프로필의 좋아요 게시글 확인",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// 좋아요한 게시글 리스트에 대상 글이 있는지 확인\r",
+											"pm.test(\"내 프로필의 좋아요한 글 목록에 포함\", function () {\r",
+											"    const articles = pm.response.json().articles;\r",
+											"    const targetSlug = pm.environment.get(\"target_slug\");\r",
+											"    const found = articles.some(article => article.slug === targetSlug);\r",
+											"    pm.expect(found).to.be.true;\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/articles?favorited={{username}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"articles"
+									],
+									"query": [
+										{
+											"key": "favorited",
+											"value": "{{username}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "게시글 좋아요 취소",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// 좋아요가 취소되었는지 확인\r",
+											"pm.test(\"게시글 좋아요 취소 성공 [상태코드 200 OK]\", function () {\r",
+											"    const article = pm.response.json().article;\r",
+											"    pm.expect(article.favorited).to.eql(false);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/articles/{{target_slug}}/favorite",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"articles",
+										"{{target_slug}}",
+										"favorite"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "좋아요 취소 후 확인",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// 좋아요한 게시글 리스트에 대상 글이 있는지 확인\r",
+											"pm.test(\"좋아요 취소 후 글 목록에서 제거 [상태코드 200 OK]\", function () {\r",
+											"    const articles = pm.response.json().articles;\r",
+											"    const targetSlug = pm.environment.get(\"target_slug\");\r",
+											"    const found = articles.some(article => article.slug === targetSlug);\r",
+											"    pm.expect(found).to.be.false;\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Token {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/articles?favorited={{username}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"articles"
+									],
+									"query": [
+										{
+											"key": "favorited",
+											"value": "{{username}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "댓글 (comment) Test",
+			"item": [
+				{
+					"name": "로그인 성공",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"로그인 요청이 성공 [상태코드 200 OK]\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"응답에 user 객체 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"user\");\r",
+									"    pm.expect(jsonData.user).to.have.property(\"email\", \"test@com\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"JWT 토큰이 존재 확인\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.user).to.have.property(\"token\");\r",
+									"    pm.environment.set(\"token\", jsonData.user.token); // 토큰을 환경변수에 저장 (다음 요청에서 사용 가능)\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"user\": {\"email\": \"{{email}}\", \"password\": \"{{password}}\"}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "글로벌 피드 두번째 게시글 가져오기",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const articles = pm.response.json().articles;\r",
+									"pm.test(\"글 목록 받아오기 성공\", () => {\r",
+									"    pm.expect(articles.length).to.be.above(1);\r",
+									"});\r",
+									"pm.environment.set(\"target_slug\", articles[1].slug);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "댓글 달기",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"댓글 작성 성공\", function () {\r",
+									"    const comment = pm.response.json().comment;\r",
+									"    const randomComment = pm.environment.get(\"randomcomment\");\r",
+									"    pm.expect(comment.body).to.eql(randomComment);\r",
+									"    pm.environment.set(\"comment_id\", comment.id);  // 나중에 삭제용\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const randomcomment = Math.floor(Math.random() * 1000000).toString(); // Convert to string\r",
+									"pm.environment.set(\"randomcomment\", randomcomment);\r",
+									"console.log(\"randomcomment set to:\", randomcomment);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"comment\": {\r\n    \"body\": \"{{randomcomment}}\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles/{{target_slug}}/comments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles",
+								"{{target_slug}}",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "댓글 작성 여부 확인",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const comments = pm.response.json().comments;\r",
+									"const expectedComment = pm.environment.get(\"randomcomment\");\r",
+									"\r",
+									"pm.test(\"댓글 목록에 작성한 댓글이 있는지 확인\", function () {\r",
+									"    const found = comments.some(c => c.body === expectedComment);\r",
+									"    pm.expect(found).to.be.true;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles/{{target_slug}}/comments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles",
+								"{{target_slug}}",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "댓글 삭제",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"댓글 삭제 성공 [상태코드 200 OK]\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles/{{target_slug}}/comments/{{comment_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles",
+								"{{target_slug}}",
+								"comments",
+								"{{comment_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "댓글 작성 여부 확인 Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const comments = pm.response.json().comments;\r",
+									"const expectedComment = pm.environment.get(\"randomcomment\");\r",
+									"\r",
+									"pm.test(\"삭제된 댓글이 목록에 없어야 함\", function () {\r",
+									"    const found = comments.some(c => c.body === expectedComment);\r",
+									"    pm.expect(found).to.be.false;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/articles/{{target_slug}}/comments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles",
+								"{{target_slug}}",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "서버 연결 확인",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{auth_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000"
+				}
+			},
+			"response": []
+		}
+	]
+}
