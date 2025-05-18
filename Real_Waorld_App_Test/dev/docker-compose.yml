@@ -1,0 +1,111 @@
+version: '3.8'
+networks:
+  realworld-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+
+services:
+  api:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.api
+    volumes:
+      - ./backend:/app
+      - ./scripts:/scripts
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://seondong:tjsehd85@db:5432/realworld?schema=public
+      - JWT_SECRET=random-secret-key-for-testing
+      - NODE_ENV=development
+    networks:
+      realworld-network:
+        ipv4_address: 172.19.0.3
+    restart: unless-stopped
+    command: /bin/sh -c "/scripts/wait-for-it.sh db:5432 -- bash -c 'npx prisma migrate deploy --schema=./src/prisma/schema.prisma && npx prisma db seed && npx ts-node --transpile-only --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" src/main.ts'"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "4100:4100"
+    volumes:
+      - ./frontend:/app
+      - ./scripts:/scripts
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - API_ROOT=http://api:3000/api
+      - PORT=4100
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      realworld-network:
+        ipv4_address: 172.19.0.4
+    depends_on:
+      - api
+    restart: unless-stopped
+    command: /bin/sh -c "cd /app && /scripts/wait-for-it.sh api:3000 -- npm start"
+
+  db:
+    image: postgres:14-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./db/init:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=realworld_user
+      - POSTGRES_PASSWORD=your_secure_password
+      - POSTGRES_DB=realworld
+    ports:
+      - "5432:5432"
+    networks:
+      realworld-network: 
+        ipv4_address: 172.19.0.6
+    restart: unless-stopped
+
+  jenkins:
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
+    privileged: true
+    user: root
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts:/scripts
+    networks:
+      realworld-network:
+        ipv4_address: 172.19.0.5
+    restart: unless-stopped
+    environment:
+      - GITLAB_TOKEN=${GITLAB_TOKEN}
+      - GITLAB_EMAIL=${GITLAB_EMAIL}
+      - GIT_REPO_URL=https://kdt-gitlab.elice.io/qa_track/class_01/qa-project2/team02/team02.git
+      - TZ=Asia/Seoul
+      - JENKINS_URL=http://119.59.0.42:8080/
+    command: >
+      /bin/bash -c "
+        echo 'Setting permissions for scripts...' &&
+        chmod -R 755 /scripts/ &&
+        ls -la /scripts/ &&
+        echo 'Running Jenkins setup script...' &&
+        cp /scripts/jenkins-setup.sh /tmp/jenkins-setup.sh &&
+        chmod +x /tmp/jenkins-setup.sh &&
+        dos2unix /tmp/jenkins-setup.sh &&
+        cat /tmp/jenkins-setup.sh &&
+        bash /tmp/jenkins-setup.sh &&
+        echo 'Starting Jenkins...' &&
+        /sbin/tini -- /usr/local/bin/jenkins.sh
+      "
+
+volumes:
+  postgres_data:
+  jenkins_home:
