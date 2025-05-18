@@ -1,0 +1,37 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+# SSL 인증서와 필수 패키지 설치
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    postgresql-client \
+    netcat-openbsd \
+    ca-certificates \
+	dos2unix \
+    && rm -rf /var/lib/apt/lists/*
+
+# 환경 변수 설정
+ENV NODE_ENV=development
+ENV DATABASE_URL="postgresql://seondong:tjsehd85@db:5432/realworld?schema=public"
+ENV JWT_SECRET="random-secret-key-for-testing"
+ENV PORT=3000
+ENV HOST=0.0.0.0
+
+
+
+# 앱 종속성 설치
+COPY package*.json ./
+RUN npm install
+RUN npm install -g ts-node typescript
+
+# Prisma 스키마 복사 후 클라이언트 생성
+COPY ./src/prisma ./src/prisma/
+RUN npx prisma generate --schema=./src/prisma/schema.prisma
+
+# 소스 코드 복사
+COPY . .
+
+# 기본 포트 노출
+EXPOSE 3000
