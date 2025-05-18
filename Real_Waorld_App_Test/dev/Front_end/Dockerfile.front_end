@@ -1,0 +1,36 @@
+# Node.js 최신 LTS 버전 사용 (React + Redux 프로젝트에 적합)
+FROM node:18-alpine
+WORKDIR /app
+
+# Alpine용 필수 패키지 설치
+RUN apk add --no-cache curl git ca-certificates bash
+
+# 환경 변수 설정
+ENV NODE_ENV=development
+ENV API_ROOT=http://localhost:3000/api
+ENV PORT=4100
+
+# 종속성 설치
+COPY package*.json ./
+RUN npm install
+
+# 소스 코드 복사
+COPY . .
+
+# wait-for-it 스크립트 다운로드
+RUN mkdir -p /scripts && \
+    curl -o /scripts/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
+    chmod +x /scripts/wait-for-it.sh
+
+# 실행 스크립트 작성 (React 프로젝트 실행 방식)
+RUN echo '#!/bin/sh\n\
+# 애플리케이션 시작\n\
+echo "Starting React Frontend server on port $PORT"\n\
+npm start\n\
+' > ./start.sh && chmod +x ./start.sh
+
+# 포트 노출
+EXPOSE 4100
+
+# 기본 명령
+CMD ["/bin/sh", "-c", "/scripts/wait-for-it.sh api:3000 -- ./start.sh"]
