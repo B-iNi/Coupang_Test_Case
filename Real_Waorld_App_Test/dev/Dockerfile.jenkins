@@ -1,0 +1,149 @@
+FROM jenkins/jenkins:lts-jdk17
+
+USER root
+
+# 도커 설치
+RUN apt-get update && \
+    apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release && \
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt-get update && \
+    apt-get install -y docker-ce docker-ce-cli containerd.io
+
+# 도커 컴포즈 설치
+RUN curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    chmod +x /usr/local/bin/docker-compose
+
+# 기본 유틸리티 설치 (python3-full 포함)
+RUN apt-get update && \
+    apt-get install -y \
+    python3-full \
+    python3-pip \
+    python3-venv \
+    wget \
+    unzip \
+    xvfb \
+    dos2unix \
+    tini \
+    gnupg \
+    iputils-ping \
+    dnsutils \
+    curl \
+    software-properties-common && \
+    ln -s /usr/bin/tini /sbin/tini && \
+    ln -s /usr/bin/python3 /usr/bin/python
+	
+# 필요한 디렉토리 미리 생성
+RUN mkdir -p /scripts /opt/venv
+	
+	
+# JMeter 설치
+RUN mkdir -p /opt/apache-jmeter && \
+    wget https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.3.tgz -O /tmp/apache-jmeter.tgz && \
+    tar -xzf /tmp/apache-jmeter.tgz -C /opt/ && \
+    mv /opt/apache-jmeter-5.6.3/* /opt/apache-jmeter/ && \
+    rm -rf /opt/apache-jmeter-5.6.3 && \
+    rm /tmp/apache-jmeter.tgz && \
+    ln -s /opt/apache-jmeter/bin/jmeter /usr/local/bin/jmeter && \
+    ln -s /opt/apache-jmeter/bin/jmeter-server /usr/local/bin/jmeter-server
+	
+# JMeter 플러그인 설치 (선택 사항)
+RUN cd /opt/apache-jmeter/lib && \
+    wget -O cmdrunner-2.3.jar https://search.maven.org/remotecontent?filepath=kg/apc/cmdrunner/2.3/cmdrunner-2.3.jar && \
+    cd /opt/apache-jmeter/lib/ext && \
+    wget -O jmeter-plugins-manager-1.10.jar https://jmeter-plugins.org/get/ && \
+    java -cp /opt/apache-jmeter/lib/ext/jmeter-plugins-manager-1.10.jar org.jmeterplugins.repository.PluginManagerCMDInstaller && \
+    cd /opt/apache-jmeter/bin && \
+    ./PluginsManagerCMD.sh install jpgc-graphs-basic
+	
+# JMeter 권한 설정
+RUN chown -R jenkins:jenkins /var/jenkins_home /scripts /opt/venv /opt/apache-jmeter
+
+# 가상 환경 생성 및 활성화
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
+
+# 가상 환경 내에서 pip 업그레이드 및 패키지 설치
+RUN . /opt/venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install pytest pytest-html pytest-xdist allure-pytest
+
+# Chrome 브라우저 설치
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
+    apt-get update && \
+    apt-get install -y google-chrome-stable && \
+    rm -rf /var/lib/apt/lists/*
+
+# Chrome 버전과 일치하는 ChromeDriver 설치
+RUN wget -O /tmp/chromedriver.zip "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/136.0.7103.92/linux64/chromedriver-linux64.zip" && \
+    unzip /tmp/chromedriver.zip -d /tmp && \
+    mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
+    chmod +x /usr/local/bin/chromedriver && \
+    rm -rf /tmp/chromedriver.zip /tmp/chromedriver-linux64
+
+# requirements.txt 파일 복사 및 가상 환경 내에서 Python 의존성 설치
+COPY requirements.txt /tmp/requirements.txt
+RUN . /opt/venv/bin/activate && \
+    pip install --no-cache-dir -r /tmp/requirements.txt
+
+# Allure 설치 (선택 사항)
+RUN curl -o /tmp/allure-2.25.0.tgz -Ls https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.25.0/allure-commandline-2.25.0.tgz && \
+    tar -zxvf /tmp/allure-2.25.0.tgz -C /opt/ && \
+    ln -s /opt/allure-2.25.0/bin/allure /usr/local/bin/allure && \
+    rm /tmp/allure-2.25.0.tgz
+	
+# Node.js와 Newman 설치
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g newman newman-reporter-html && \
+    npm cache clean --force
+	
+# 한국어 로케일 및 폰트 설치
+RUN apt-get update && \
+    apt-get install -y locales fonts-nanum && \
+    localedef -i ko_KR -c -f UTF-8 -A /usr/share/locale/locale.alias ko_KR.UTF-8
+    
+# 한국어 로케일 환경변수 설정
+ENV LANG=ko_KR.UTF-8 \
+    LANGUAGE=ko_KR:ko \
+    LC_ALL=ko_KR.UTF-8
+
+# 환경 변수 설정
+ENV DISPLAY=:99
+ENV PATH="/opt/venv/bin:/usr/local/bin:${PATH}"
+ENV CHROME_BINARY_PATH=/usr/bin/google-chrome
+ENV CHROMEDRIVER_PATH=/usr/local/bin/chromedriver
+ENV PYTHONPATH="/opt/venv/lib/python3.11/site-packages:${PYTHONPATH}"
+
+# 스크립트 디렉토리 생성
+RUN mkdir -p /scripts
+
+# jenkins-setup.sh 스크립트 복사
+COPY scripts/jenkins-setup.sh /scripts/
+RUN chmod +x /scripts/jenkins-setup.sh
+
+# 초기화 디렉토리 생성
+RUN mkdir -p /var/jenkins_home/init.groovy.d /var/jenkins_home/jobs/realworld-pipeline
+
+# Jenkins 플러그인 설치
+RUN jenkins-plugin-cli --plugins \
+    git \
+    gitlab-plugin \
+    docker-workflow \
+    pipeline-stage-view \
+    junit \
+    credentials-binding \
+    allure-jenkins-plugin \
+	performance \
+    htmlpublisher
+
+# 셸 스크립트 생성
+RUN echo '#!/bin/bash\n\
+source /opt/venv/bin/activate\n\
+exec "$@"\n\
+' > /usr/local/bin/with_venv && \
+    chmod +x /usr/local/bin/with_venv
+
+# 올바른 권한 설정
+RUN chown -R jenkins:jenkins /var/jenkins_home /scripts /opt/venv
