@@ -27,6 +27,6 @@ def driver():
     # 테스트가 끝나면 드라이버 종료
     driver.quit()
 
-coupang.com => MainPage 
-/login => loginPage
-/signup => 회원가입 페이지 
+#coupang.com => MainPage 
+#/login => loginPage
+#/signup => 회원가입 페이지 
