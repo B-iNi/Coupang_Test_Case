@@ -1,57 +1,35 @@
-import time
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.support.ui import Select
+from playwright.sync_api import Page
 
 
 class SignUpPage:
     URL = "https://www.nibbuns.co.kr/shop/idinfo.html"
-    
-    def __init__(self, driver: WebDriver):
-        self.driver = driver
-    
+
+    def __init__(self, page: Page):
+        self.page = page
+
     #페이지 열기
     def open(self):
-        self.driver.get(self.URL)
-    
-    #체크박스 선택      
-    def check_box(self, checkbox: str):
-        item = self.driver.find_element(By.NAME, checkbox)
-        wait = WebDriverWait(self.driver,10)
-        wait.until(EC.element_to_be_clickable((By.NAME, checkbox)))
-        item.click()
-        
+        self.page.goto(self.URL)
+
+    #체크박스 선택
+    def check_box(self, checkbox_name: str):
+        checkbox_locator = self.page.locator(f'input[name="{checkbox_name}"]')
+        checkbox_locator.check()
+
     #버튼 클릭
-    def click_btn(self, btn: str):
-        button = self.driver.find_element(By.XPATH, btn)
-        button.click()
-    
+    def click_btn(self, btn_xpath: str):
+        button_locator = self.page.locator(f"xpath={btn_xpath}")
+        button_locator.click()
+
     def input_info(self, name: str, id: str, password: str, check_password: str, email: str, phone_number: str):
-        name_input_box = self.driver.find_element(By.ID, 'hname')
-        name_input_box.send_keys(name)
-        time.sleep(1)
-        id_input_box = self.driver.find_element(By.ID, 'id')
-        id_input_box.send_keys(id)
-        time.sleep(1)
-        password_input_box = self.driver.find_element(By.ID, 'password1')
-        password_input_box.send_keys(password)
-        time.sleep(1)
-        check_password_input_box = self.driver.find_element(By.ID, 'password2')
-        check_password_input_box.send_keys(check_password)
-        time.sleep(1)
-        email_input_box = self.driver.find_element(By.ID, 'email')
-        email_input_box.send_keys(email)
-        time.sleep(1)
-        phone_number_input_box = self.driver.find_element(By.ID, 'etcphone')
-        phone_number_input_box.send_keys(phone_number)
-        time.sleep(1)
-        
+        self.page.locator('#hname').fill(name)
+        self.page.locator('#id').fill(id)
+        self.page.locator('#password1').fill(password)
+        self.page.locator('#password2').fill(check_password)
+        self.page.locator('#email').fill(email)
+        self.page.locator('#etcphone').fill(phone_number)
+
     #select box
-    def select_box(self, option: str, value: str):
-        selected_item = Select(self.driver.find_element(By.NAME, option))
-        selected_item.select_by_value(value)
-        time.sleep(1)
-       
-        
+    def select_box(self, select_name: str, value: str):
+        select_locator = self.page.locator(f'select[name="{select_name}"]')
+        select_locator.select_option(value=value)
