@@ -14,7 +14,7 @@ class SignUpPage:
     #체크박스 선택
     def check_box(self, checkbox_name: str):
         checkbox_locator = self.page.locator(f'input[name="{checkbox_name}"]')
-        checkbox_locator.check()
+        checkbox_locator.check() 
 
     #버튼 클릭
     def click_btn(self, btn_xpath: str):
