@@ -4,6 +4,8 @@ import string
 from playwright.sync_api import Page, expect
 from tests.pages.signup_page import SignUpPage
 
+# python -m pytest -s tests/test_scenario_TC001.py --headed
+
 class TestTC001:
     def test_signup(self, page: Page):
         signup_page = SignUpPage(page)
@@ -56,4 +58,3 @@ class TestTC001:
         page.wait_for_url(re.compile(r"https://www\.nibbuns\.co\.kr/.*\.html"), timeout=20000) 
         expect(page).to_have_url(re.compile(r"https://www\.nibbuns\.co\.kr/html/mainm\.html")) 
 
-# python -m pytest -s tests/test_scenario_TC001.py --headed

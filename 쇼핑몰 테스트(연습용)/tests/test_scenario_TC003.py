@@ -1,15 +1,21 @@
+import time
 import pytest
-import re
-from playwright.sync_api import Page, expect
+from selenium.webdriver.support.ui import WebDriverWait as ws
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from urllib import parse
 from pages.shopdetail_page import ShopdetailPage
+from selenium.webdriver.support.ui import Select
+import random
 
-# pytest-playwright의 page fixture를 사용하므로 usefixtures는 필요 없습니다.
+@pytest.mark.usefixtures("driver")
 class TestMainPage:
 
-    # driver: WebDriver 대신 page: Page fixture를 사용합니다.
-    def test_TC003(self, page: Page):
+    def test_TC003(self, driver: WebDriver):
         try:
-            Shopdetail_page = ShopdetailPage(page)
+            Shopdetail_page = ShopdetailPage(driver)
 
             #베스트 50 페이지 오픈
             Shopdetail_page.open()
@@ -17,12 +23,11 @@ class TestMainPage:
             wait = ws(driver, 10) 
             wait.until(EC.url_contains("bestseller"))
             assert "bestseller" in driver.current_url
-            # Playwright의 wait_for_url과 expect를 사용합니다.
-            page.wait_for_url("**/bestseller.html", timeout=10000)
-            expect(page).to_have_url(re.compile(r".*bestseller\.html"))
 
             #특정 상품 선택
             Shopdetail_page.choice_click_by_bestiem(30)
+            time.sleep(2)
+            #2번째 옵션 선택 밑 랜덤 옵션 선택
             Shopdetail_page.choice_option(2)
             Shopdetail_page.random_option()
             '''
