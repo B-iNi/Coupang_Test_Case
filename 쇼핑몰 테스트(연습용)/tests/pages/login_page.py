@@ -1,6 +1,6 @@
 from playwright.sync_api import Page
 
-
+review_page.py shopdetail_page.py 35678
 class LoginPage:
     URL = "https://www.nibbuns.co.kr/shop/member.html?type=login"
 

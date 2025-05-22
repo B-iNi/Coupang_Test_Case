@@ -1,16 +1,14 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
 import time
 import random
+from playwright.sync_api import Page
 
 class ShopdetailPage:
     URL = "https://www.nibbuns.co.kr/shop/bestseller.html?xcode=BEST&ref=&suburl=shop%2Fbestseller.html%3Fxcode%3DBEST/"
     SEARCH_INPUT_ID = '//*[@id="hd"]/div[3]/div[1]/div[2]/form/fieldset/input'
     SOLD_OUT = '품절'
+    # Playwright 로케이터는 CSS 선택자를 기본으로 사용합니다.
+    # 기존 XPath를 Playwright 로케이터로 사용하려면 'xpath=' 접두사를 붙여야 합니다.
+    # 가능하면 CSS 선택자로 변경하는 것이 좋습니다.
     OPTION_XPATH = '//*[@id="MK_innerOptScroll"]//a[@href]'
     OPTION_CLASS = 'basic_option'
 
@@ -21,55 +19,75 @@ class ShopdetailPage:
         self.driver.get(self.URL)
 
     def open_page(self, url : str):
-        self.driver.get(url)
+        self.page.goto(url)
 
     #bestseller에서 작동    
     def all_click_by_bestiem(self):
-        #link= self.driver.find_elements(By.XPATH,'//*[@id="prdBrand"]/div[3]/div/ul//a[@href]')
-        links=self.driver.find_elements(By.CLASS_NAME ,"prdImg")
-        print(len(links))
-        for i in links :
-            #클릭을 사용시 화면에 보이는 부분만 가능 대신 화면이 내려가면서 클릭되기 때문에 둘중 하나 선택
-            #i.click()
-            self.driver.execute_script("arguments[0].click();", i)
-            self.driver.back()
-            time.sleep(0.5)
-        
+        # Playwright는 기본적으로 요소가 클릭 가능할 때까지 기다립니다.
+        # execute_script를 사용할 필요가 없습니다.
+        # CSS 선택자로 변경하는 것이 좋습니다. 예: '.prdImg'
+        links_locators = self.page.locator(".prdImg").all()
+        print(len(links_locators))
+        for link_locator in links_locators:
+            link_locator.click()
+            self.page.go_back() # driver.back() 대신 page.go_back() 사용
+            # time.sleep(0.5) # Playwright auto-waiting으로 대부분 불필요
+
     #bestseller에서 작동
     def choice_click_by_bestiem(self, select : int) :
-        #find_elements(By.XPATH, './/a[@href]')
-        links=self.driver.find_elements(By.CLASS_NAME ,"prdImg")
-        self.driver.execute_script("arguments[0].click();", links[select])
+        # CSS 선택자로 변경하는 것이 좋습니다. 예: '.prdImg'
+        links_locators = self.page.locator(".prdImg").all()
+        if 0 <= select < len(links_locators):
+             links_locators[select].click()
+        else:
+            print(f"Warning: Index {select} is out of bounds for {len(links_locators)} items.")
 
     #bestseller에서 작동
     def random_click_by_bestiem(self) :
-        #find_elements(By.XPATH, './/a[@href]')
-        links=self.driver.find_elements(By.CLASS_NAME ,"prdImg")
-        self.driver.execute_script("arguments[0].click();", links[random.randint(0, len(links)-1)])
+        # CSS 선택자로 변경하는 것이 좋습니다. 예: '.prdImg'
+        links_locators = self.page.locator(".prdImg").all()
+        if links_locators:
+            random_index = random.randint(0, len(links_locators) - 1)
+            links_locators[random_index].click()
 
     #shopdetail에서 작동
     def choice_option(self, select : int) :
-        option = self.driver.find_element(By.CLASS_NAME ,"basic_option")
-        if any(self.SOLD_OUT in item for item in option.text) :
-            Select(option).select_by_index(select+1)
-            
+        # CSS 선택자로 변경하는 것이 좋습니다. 예: 'select.basic_option'
+        option_locator = self.page.locator('select.basic_option')
+        # 품절 여부 확인 로직은 Playwright의 text_content()를 사용해야 합니다.
+        # 현재 로직은 옵션 텍스트 전체에 "품절"이 있는지 확인하는 것으로 보입니다.
+        # 실제 웹사이트 구조에 따라 더 정확한 로직이 필요할 수 있습니다.
+        # 여기서는 일단 select_option을 사용하도록 변경합니다.
+        # if self.SOLD_OUT not in option_locator.text_content(): # 품절이 아닌 경우에만 선택?
+        option_locator.select_option(index=select + 1) # index는 0부터 시작하지만, 첫 번째 옵션은 보통 "선택하세요"이므로 +1
+
     #shopdetail에서 작동
     def random_option(self) :
-        option = self.driver.find_element(By.CLASS_NAME ,"basic_option")
-        if any(self.SOLD_OUT in item for item in option.text) :
-            Select(option).select_by_index(random.randint(1, len(Select(option).options) - 1))
+        # CSS 선택자로 변경하는 것이 좋습니다. 예: 'select.basic_option'
+        option_locator = self.page.locator('select.basic_option')
+        # if self.SOLD_OUT not in option_locator.text_content(): # 품절이 아닌 경우에만 선택?
+        options_count = option_locator.locator('option').count()
+        if options_count > 1: # "선택하세요" 옵션 제외
+            random_index = random.randint(1, options_count - 1)
+            option_locator.select_option(index=random_index)
 
     def count_up_option(self, select : int) :
-        option= self.driver.find_elements(By.XPATH, self.OPTION_XPATH)
-        if len(option) > select*3 or any(self.SOLD_OUT in item for item in option.text) :
-            option[select*3].click()
-        
+        # XPath 로케이터를 Playwright 로케이터로 변경
+        option_locators = self.page.locator(f'xpath={self.OPTION_XPATH}').all()
+        # 품절 확인 로직은 실제 웹사이트 구조에 맞게 수정 필요
+        if len(option_locators) > select * 3: # or any(self.SOLD_OUT in item for item in [loc.text_content() for loc in option_locators]):
+            option_locators[select * 3].click()
+
     def count_down_option(self, select : int) :
-        option= self.driver.find_elements(By.XPATH, self.OPTION_XPATH)
-        if len(option) > select*3 or any(self.SOLD_OUT in item for item in option.text):
-            option[1 + select*3].click()
-        
+        # XPath 로케이터를 Playwright 로케이터로 변경
+        option_locators = self.page.locator(f'xpath={self.OPTION_XPATH}').all()
+        # 품절 확인 로직은 실제 웹사이트 구조에 맞게 수정 필요
+        if len(option_locators) > select * 3 + 1: # or any(self.SOLD_OUT in item for item in [loc.text_content() for loc in option_locators]):
+            option_locators[1 + select * 3].click()
+
     def choice_del_option(self, select : int) :
-        option= self.driver.find_elements(By.XPATH, self.OPTION_XPATH)
-        if len(option) > select*3 or any(self.SOLD_OUT in item for item in option.text) :
-            option[2 + select*3].click()
+        # XPath 로케이터를 Playwright 로케이터로 변경
+        option_locators = self.page.locator(f'xpath={self.OPTION_XPATH}').all()
+        # 품절 확인 로직은 실제 웹사이트 구조에 맞게 수정 필요
+        if len(option_locators) > select * 3 + 2: # or any(self.SOLD_OUT in item for item in [loc.text_content() for loc in option_locators]):
+            option_locators[2 + select * 3].click()
