@@ -1,27 +1,23 @@
-import time
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.support.ui import Select
+from playwright.sync_api import Page
 
 
 class LoginPage:
     URL = "https://www.nibbuns.co.kr/shop/member.html?type=login"
-    
-    def __init__(self, driver: WebDriver):
-        self.driver = driver
-    
+
+    def __init__(self, page: Page):
+        # Selenium WebDriver 대신 Playwright Page 객체를 받도록 변경
+        self.page = page
+
     #페이지 열기
     def open(self):
-        self.driver.get(self.URL)
-        
+        self.page.goto(self.URL)
+
     def input_id_and_password(self, id: str, password: str):
-        id_input_box = self.driver.find_element(By.NAME, 'id')
-        id_input_box.send_keys(id)
-        password_input_box = self.driver.find_element(By.NAME, 'passwd')
-        password_input_box.send_keys(password)
-  
+        # Selenium find_element 대신 Playwright locator 사용
+        self.page.locator('input[name="id"]').fill(id)
+        self.page.locator('input[name="passwd"]').fill(password)
+
     def click_login_button(self):
-        login_button = self.driver.find_element(By.CLASS_NAME, 'btn-mlog')
-        login_button.click()
+        # Selenium find_element 대신 Playwright locator 사용
+        # 클래스 이름 'btn-mlog'를 가진 요소를 찾습니다.
+        self.page.locator('.btn-mlog').click()
