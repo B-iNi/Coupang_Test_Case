@@ -7,6 +7,7 @@ from tests.pages.login_page import LoginPage
 #  python -m pytest -s tests/test_scenario_TC002.py --headed
 
 class TestTC002:
+    # 로그인 test
     def test_002(self, page: Page):
         try:
             login_page = LoginPage(page)

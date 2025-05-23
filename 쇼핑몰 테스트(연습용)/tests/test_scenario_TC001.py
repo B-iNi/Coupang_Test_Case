@@ -7,6 +7,7 @@ from tests.pages.signup_page import SignUpPage
 # python -m pytest -s tests/test_scenario_TC001.py --headed
 
 class TestTC001:
+    # 회원가입 Test
     def test_001(self, page: Page):
         signup_page = SignUpPage(page)
         signup_page.open()

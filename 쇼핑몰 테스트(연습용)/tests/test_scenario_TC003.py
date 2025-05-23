@@ -3,6 +3,9 @@ import random
 import time
 from playwright.sync_api import Page, expect
 
+
+# python -m pytest -s tests/test_scenario_TC003.py --headed
+
 BESTSELLER_URL = "https://www.nibbuns.co.kr/shop/bestseller.html?xcode=BEST"
 
 def scroll_to_bottom(page: Page, delay: float = 2.0):
@@ -10,6 +13,7 @@ def scroll_to_bottom(page: Page, delay: float = 2.0):
     page.evaluate("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(delay)
 
+# 랜덤으로 상품 고른 뒤 옵션 선택 test
 def test_003(page: Page):
     # 1. 베스트셀러 페이지 열기
     page.goto(BESTSELLER_URL, wait_until="domcontentloaded")
@@ -47,6 +51,7 @@ def test_003(page: Page):
     page.select_option("select[name='optionlist[]']", value=option_value)
     print(f"✅ 선택한 옵션: {option_text} (value={option_value})")
 
+# 랜덤 상품의 랜덤 옵션 추가선택 test
 def test_004(page: Page):
     # 1. 베스트셀러 페이지 열기
     page.goto(BESTSELLER_URL, wait_until="domcontentloaded")
@@ -91,7 +96,7 @@ def test_004(page: Page):
     page.select_option(option_select_locator_str, value=selected_option_elements[1].get_attribute("value"))
     print(f"✅ 최종 선택된 옵션 (확인용): {selected_option_elements[1].text_content()} (value={selected_option_elements[1].get_attribute('value')})")
     
-
+# 랜덤 상품의 랜덤 옵션 수량 조절 test
 def test_005(page: Page):
     page.goto(BESTSELLER_URL, wait_until="domcontentloaded")
     for _ in range(6):
