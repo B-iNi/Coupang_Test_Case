@@ -5,7 +5,7 @@
 
 ##### 웹 자동화 도구 : Selenium   
 2025.03.19 selenium 완  
-2025.05.22 selenium --> Playwright 시도 중 
+2025.05.22 selenium --> Playwright 시도 중  
 2025.05.23 TC003까지 확인 완  
 
   
