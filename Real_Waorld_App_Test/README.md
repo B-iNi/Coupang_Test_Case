@@ -30,8 +30,27 @@
 ## ⚙️ 개발 및 테스트 환경
 
 - Python 3.8+
-- `pytest`
+- `pytest` 
 - `selenium`
+- `playwright`
 - `webdriver-manager`
 - `pytest-html`
 - `pytest-xdist`
+
+## Docker 사용시  
+docker run --name realworld-postgres ^
+  -e POSTGRES_USER=realworld_user ^
+  -e POSTGRES_PASSWORD=123123 ^
+  -e POSTGRES_DB=realworld ^
+  -p 5432:5432 ^
+  -d postgres
+
+## 프론트  
+npm start  
+
+## 백엔드  
+npx prisma generate   (prisma 클라이언트 생성)
+npx prisma migrate deploy   (데이터베이스 마이그레이션)
+npx prisma db seed   (네이터베이스 시딩 *선택사항*)
+npx nx serve api   (백엔드 서버 실행)
+
